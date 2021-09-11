@@ -1,9 +1,0 @@
-setup.py
-/home/lujiachen/Documents/pvt_t2t_al/SOFT/SOFT/kernel/csrc/cuda_version.cu
-/home/lujiachen/Documents/pvt_t2t_al/SOFT/SOFT/kernel/csrc/vision.cpp
-/home/lujiachen/Documents/pvt_t2t_al/SOFT/SOFT/kernel/csrc/subtraction/GaussianSubtraction_cuda.cu
-/home/lujiachen/Documents/pvt_t2t_al/SOFT/SOFT/kernel/csrc/subtraction/GaussianSubtraction_cuda_kernel.cu
-SOFT.egg-info/PKG-INFO
-SOFT.egg-info/SOURCES.txt
-SOFT.egg-info/dependency_links.txt
-SOFT.egg-info/top_level.txt
