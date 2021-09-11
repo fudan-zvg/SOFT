@@ -1,0 +1,10 @@
+Metadata-Version: 1.2
+Name: SOFT
+Version: 0.0.0
+Summary: SOFT:softmax-free transformer 
+Home-page: UNKNOWN
+Author: FUDAN-zvg + HUAWEI noah
+License: UNKNOWN
+Description: UNKNOWN
+Platform: UNKNOWN
+Requires-Python: >=3.6
