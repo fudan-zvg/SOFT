@@ -22,7 +22,7 @@ python -m pip install -e SOFT
 
 ## Main results
 ### Image Classification
-#### ImageNet-1
+#### ImageNet-1K
 
 | Model       | Resolution | Params | FLOPs | Top-1 % |
 |-------------|:----------:|:------:|:-----:|:-------:|
