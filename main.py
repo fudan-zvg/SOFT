@@ -18,9 +18,9 @@ from timm.models import load_checkpoint, create_model, resume_checkpoint, conver
 from timm.utils import *
 from timm.loss import LabelSmoothingCrossEntropy, SoftTargetCrossEntropy, JsdCrossEntropy
 from timm.optim import create_optimizer
-from optimizer import my_create_optimizer, my_create_scheduler
 from timm.scheduler import create_scheduler
 from timm.utils import ApexScaler, NativeScaler
+
 # from ptflops import get_model_complexity_info
 # from thop import profile, clever_format
 
@@ -124,7 +124,7 @@ parser.add_argument('--no-aug', action='store_true', default=False,
                     help='Disable all training augmentation, override other train aug args')
 parser.add_argument('--scale', type=float, nargs='+', default=[0.08, 1.0], metavar='PCT',
                     help='Random resize scale (default: 0.08 1.0)')
-parser.add_argument('--ratio', type=float, nargs='+', default=[3./4., 4./3.], metavar='RATIO',
+parser.add_argument('--ratio', type=float, nargs='+', default=[3. / 4., 4. / 3.], metavar='RATIO',
                     help='Random resize aspect ratio (default: 0.75 1.33)')
 parser.add_argument('--hflip', type=float, default=0.5,
                     help='Horizontal flip training aug probability')
@@ -174,8 +174,6 @@ parser.add_argument('--drop-block', type=float, default=None, metavar='PCT',
                     help='Drop block rate (default: None)')
 parser.add_argument('--newton-maxiter', default=20, type=int,
                     help='max iterration in newton method')
-parser.add_argument('--gd-maxiter', default=10, type=int,
-                    help='max iterration in gd method')
 parser.add_argument('--reset-drop', action='store_true', default=False,
                     help='whether to reset drop')
 
@@ -253,6 +251,7 @@ try:
 except AttributeError:
     pass
 
+
 def _parse_args():
     # Do we have a config file to parse?
     args_config, remaining = config_parser.parse_known_args()
@@ -304,60 +303,15 @@ def main():
 
     torch.manual_seed(args.seed + args.rank)
 
-    # model = create_model(
-    #     args.model,
-    #     pretrained=args.pretrained,
-    #     num_classes=args.num_classes,
-    #     drop_rate=args.drop,
-    #     drop_connect_rate=args.drop_connect,  # DEPRECATED, use drop_path
-    #     drop_path_rate=args.drop_path,
-    #     drop_block_rate=args.drop_block,
-    #     global_pool=args.gp,
-    #     bn_tf=args.bn_tf,
-    #     bn_momentum=args.bn_momentum,
-    #     bn_eps=args.bn_eps,
-    #     checkpoint_path=args.initial_checkpoint,
-    #     img_size=args.img_size)
-    if 'mlp' in args.model:
-        model = create_model(
-            args.model,
-            pretrained=args.pretrained,
-            num_classes=args.num_classes,)
-    elif 'vip' in args.model:
-        model = create_model(
-            args.model,
-            pretrained=args.pretrained,
-            num_classes=args.num_classes,
-            drop_rate=args.drop,
-            drop_path_rate=args.drop_path,
-        )
-    else:
-        model = create_model(
-            args.model,
-            pretrained=args.pretrained,
-            num_classes=args.num_classes,
-            drop_rate=args.drop,
-            drop_path_rate=args.drop_path,
-            drop_block_rate=None,
-            newton_max_iter=args.newton_maxiter,
-            gd_max_iter=args.gd_maxiter,
-        )
+    model = create_model(
+        args.model,
+        pretrained=args.pretrained,
+        num_classes=args.num_classes,
+        drop_rate=args.drop,
+        drop_path_rate=args.drop_path,
+        drop_block_rate=None,
+        newton_max_iter=args.newton_maxiter)
 
-    #### cal flops and params ####
-    ### thop
-    # test_input = torch.randn(1, 3, 224, 224)
-    # macs, params = profile(model, inputs=(test_input,),
-    #                        custom_ops={})
-    # macs, params = clever_format([macs, params], "%.3f")
-    # print("THOP stats: ", macs, params)
-    # input()
-
-    ### ptflops
-    # flops, params = get_model_complexity_info(model, (3, 224, 224), as_strings=True,
-    #                                           print_per_layer_stat=True)  # 不用写batch_size大小，默认batch_size=1
-    # print('Ptflops stats: ', flops, params)
-    # input()
-    model_without_ddp = model
     linear_scaled_lr = args.lr * args.batch_size * args.world_size / 512.0
     args.lr = linear_scaled_lr
     print("learning rate is %f" % linear_scaled_lr)
@@ -403,10 +357,8 @@ def main():
         model.cuda()
         if args.channels_last:
             model = model.to(memory_format=torch.channels_last)
-    try:
-        optimizer = create_optimizer(args, model)
-    except:
-        optimizer = my_create_optimizer(args, model)
+
+    optimizer = create_optimizer(args, model)
 
     amp_autocast = suppress  # do nothing
     loss_scaler = None
@@ -466,14 +418,12 @@ def main():
         else:
             if args.local_rank == 0:
                 _logger.info("Using native Torch DistributedDataParallel.")
-            model = NativeDDP(model, device_ids=[args.local_rank], find_unused_parameters=True)  # can use device str in Torch >= 1.1
+            model = NativeDDP(model, device_ids=[args.local_rank],
+                              find_unused_parameters=True)  # can use device str in Torch >= 1.1
         model_without_ddp = model.module
         # NOTE: EMA model does not need to be wrapped by DDP
 
-    if args.sched in ['poly']:
-        lr_scheduler, num_epochs = my_create_scheduler(args, optimizer)
-    else:
-        lr_scheduler, num_epochs = create_scheduler(args, optimizer)
+    lr_scheduler, num_epochs = create_scheduler(args, optimizer)
     start_epoch = 0
     if args.start_epoch is not None:
         # a specified start_epoch will always override the resume epoch
@@ -578,7 +528,7 @@ def main():
     eval_metric = args.eval_metric
     best_metric = None
     best_epoch = None
-    
+
     if args.eval:  # evaluate the model
         # load_checkpoint(model, args.eval_checkpoint, args.model_ema)
         val_metrics = validate(model, loader_eval, validate_loss_fn, args)

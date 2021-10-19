@@ -11,6 +11,7 @@ from timm.models.registry import register_model
 from timm.models.vision_transformer import _cfg
 from .softmax_free_transformer import SoftmaxFreeTransformer, SoftmaxFreeTrasnformerBlock
 
+
 class Mlp(nn.Module):
     def __init__(self, in_features, hidden_features=None, out_features=None, act_layer=nn.GELU, drop=0.):
         super().__init__()
@@ -28,6 +29,7 @@ class Mlp(nn.Module):
         x = self.fc2(x)
         x = self.drop(x)
         return x
+
 
 class Attention(nn.Module):
     def __init__(self, dim, num_heads=8, qkv_bias=False, qk_scale=None, attn_drop=0., proj_drop=0., sr_ratio=1):
@@ -73,6 +75,7 @@ class Attention(nn.Module):
 
         return x
 
+
 class Block(nn.Module):
 
     def __init__(self, dim, num_heads, mlp_ratio=4., qkv_bias=False, qk_scale=None, drop=0., attn_drop=0.,
@@ -94,7 +97,8 @@ class Block(nn.Module):
         x = x + self.drop_path(self.mlp(self.norm2(x)))
 
         return x
-    
+
+
 class PatchEmbed(nn.Module):
     """ Image to Patch Embedding
     """
@@ -134,7 +138,7 @@ class SoftmaxFreeVisionTransformer(nn.Module):
     def __init__(self, img_size=224, patch_size=16, in_chans=3, num_classes=1000, embed_dims=[64, 128, 256, 512],
                  num_heads=[1, 2, 4, 8], mlp_ratios=[4, 4, 4, 4], qkv_bias=False, qk_scale=None, drop_rate=0.,
                  attn_drop_rate=0., drop_path_rate=0., norm_layer=nn.LayerNorm,
-                 depths=[3, 4, 6, 3], sr_ratios=[8, 4, 2, 1], newton_max_iter=20, gd_max_iter=20):
+                 depths=[3, 4, 6, 3], sr_ratios=[8, 4, 2, 1], newton_max_iter=20, kernel_method="torch"):
         super().__init__()
         self.num_classes = num_classes
         self.depths = depths
@@ -163,17 +167,20 @@ class SoftmaxFreeVisionTransformer(nn.Module):
         dpr = [x.item() for x in torch.linspace(0, drop_path_rate, sum(depths))]  # stochastic depth decay rule
         cur = 0
         self.block1 = nn.ModuleList([SoftmaxFreeTrasnformerBlock(
-            dim=embed_dims[0], num_heads=num_heads[0], drop_path=dpr[cur + i], H=56, W=56, conv_size=9, max_iter=newton_max_iter)
+            dim=embed_dims[0], num_heads=num_heads[0], drop_path=dpr[cur + i], H=56, W=56, conv_size=9,
+            max_iter=newton_max_iter, kernel_method=kernel_method)
             for i in range(depths[0])])
 
         cur += depths[0]
         self.block2 = nn.ModuleList([SoftmaxFreeTrasnformerBlock(
-            dim=embed_dims[1], num_heads=num_heads[1], drop_path=dpr[cur + i], H=28, W=28, conv_size=5, max_iter=newton_max_iter)
+            dim=embed_dims[1], num_heads=num_heads[1], drop_path=dpr[cur + i], H=28, W=28, conv_size=5,
+            max_iter=newton_max_iter, kernel_method=kernel_method)
             for i in range(depths[1])])
 
         cur += depths[1]
         self.block3 = nn.ModuleList([SoftmaxFreeTrasnformerBlock(
-            dim=embed_dims[2], num_heads=num_heads[2], drop_path=dpr[cur + i], H=14, W=14, conv_size=3, max_iter=newton_max_iter)
+            dim=embed_dims[2], num_heads=num_heads[2], drop_path=dpr[cur + i], H=14, W=14, conv_size=3,
+            max_iter=newton_max_iter, kernel_method=kernel_method)
             for i in range(depths[2])])
 
         cur += depths[2]
@@ -209,7 +216,6 @@ class SoftmaxFreeVisionTransformer(nn.Module):
 
     @torch.jit.ignore
     def no_weight_decay(self):
-        # return {'pos_embed', 'cls_token'} # has pos_embed may be better
         return {'cls_token'}
 
     def get_classifier(self):
@@ -288,79 +294,44 @@ def soft_tiny(pretrained=False, **kwargs):
         # drop_rate=0.0, drop_path_rate=0.1)
         **kwargs)
     model.default_cfg = _cfg()
-    # if pretrained:
-    #     checkpoint = torch.hub.load_state_dict_from_url(
-    #         url=None,
-    #         map_location="cpu", check_hash=True
-    #     )
-    #     model.load_state_dict(checkpoint["model"])
-
     return model
 
+
 @register_model
-def soft_base(pretrained=False, **kwargs):
+def soft_small(pretrained=False, **kwargs):
     model = SoftmaxFreeVisionTransformer(
         patch_size=4, embed_dims=[64, 128, 320, 512], num_heads=[2, 4, 10, 16], mlp_ratios=[8, 8, 4, 4], qkv_bias=True,
         norm_layer=partial(nn.LayerNorm, eps=1e-6), depths=[1, 3, 20, 4], sr_ratios=[8, 4, 2, 1],
-        # drop_rate=0.0, drop_path_rate=0.1)
         **kwargs)
     model.default_cfg = _cfg()
-    # if pretrained:
-    #     checkpoint = torch.hub.load_state_dict_from_url(
-    #         url=None,
-    #         map_location="cpu", check_hash=True
-    #     )
-    #     model.load_state_dict(checkpoint["model"])
-
     return model
+
 
 @register_model
 def soft_medium(pretrained=False, **kwargs):
     model = SoftmaxFreeVisionTransformer(
         patch_size=4, embed_dims=[64, 128, 288, 512], num_heads=[2, 4, 9, 16], mlp_ratios=[8, 8, 4, 4], qkv_bias=True,
         norm_layer=partial(nn.LayerNorm, eps=1e-6), depths=[1, 3, 29, 5], sr_ratios=[8, 4, 2, 1],
-        # drop_rate=0.0, drop_path_rate=0.1)
         **kwargs)
     model.default_cfg = _cfg()
-    # if pretrained:
-    #     checkpoint = torch.hub.load_state_dict_from_url(
-    #         url=None,
-    #         map_location="cpu", check_hash=True
-    #     )
-    #     model.load_state_dict(checkpoint["model"])
-
     return model
+
 
 @register_model
 def soft_large(pretrained=False, **kwargs):
     model = SoftmaxFreeVisionTransformer(
         patch_size=4, embed_dims=[64, 128, 320, 512], num_heads=[2, 4, 10, 16], mlp_ratios=[8, 8, 4, 4], qkv_bias=True,
         norm_layer=partial(nn.LayerNorm, eps=1e-6), depths=[1, 3, 40, 5], sr_ratios=[8, 4, 2, 1],
-        # drop_rate=0.0, drop_path_rate=0.1)
         **kwargs)
     model.default_cfg = _cfg()
-    # if pretrained:
-    #     checkpoint = torch.hub.load_state_dict_from_url(
-    #         url=None,
-    #         map_location="cpu", check_hash=True
-    #     )
-    #     model.load_state_dict(checkpoint["model"])
-
     return model
+
 
 @register_model
 def soft_huge(pretrained=False, **kwargs):
     model = SoftmaxFreeVisionTransformer(
         patch_size=4, embed_dims=[64, 128, 352, 512], num_heads=[2, 4, 11, 16], mlp_ratios=[8, 8, 4, 4], qkv_bias=True,
         norm_layer=partial(nn.LayerNorm, eps=1e-6), depths=[1, 5, 49, 5], sr_ratios=[8, 4, 2, 1],
-        # drop_rate=0.0, drop_path_rate=0.1)
         **kwargs)
     model.default_cfg = _cfg()
-    # if pretrained:
-    #     checkpoint = torch.hub.load_state_dict_from_url(
-    #         url=None,
-    #         map_location="cpu", check_hash=True
-    #     )
-    #     model.load_state_dict(checkpoint["model"])
-
     return model
