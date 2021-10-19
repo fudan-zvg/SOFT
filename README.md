@@ -2,7 +2,7 @@
 
 ![image](resources/structure.png)
 
-> [**SOFT: Softmax-free Transformer with LinearComplexity**](https://arxiv.org/abs/2012.15840),            
+> [**SOFT: Softmax-free Transformer with Linear Complexity**](https://arxiv.org/abs/xxx),            
 > Jiachen Lu, Jinghan Yao, Junge Zhang, Xiatian Zhu, Hang Xu, Weiguo Gao, Chunjing Xu, Tao Xiang, Li Zhang,        
 > *NeurIPS 2021* 
 
