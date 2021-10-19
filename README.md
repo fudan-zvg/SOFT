@@ -54,10 +54,10 @@ work_dirs/SETR_PUP_768x768_40k_cityscapes_bs_8/iter_40000.pth \
 ## Reference
 
 ```bibtex
-@inproceedings{SETR,
-    title={Rethinking Semantic Segmentation from a Sequence-to-Sequence Perspective with Transformers}, 
-    author={Zheng, Sixiao and Lu, Jiachen and Zhao, Hengshuang and Zhu, Xiatian and Luo, Zekun and Wang, Yabiao and Fu, Yanwei and Feng, Jianfeng and Xiang, Tao and Torr, Philip H.S. and Zhang, Li},
-    booktitle={CVPR},
+@inproceedings{SOFT,
+    title={SOFT: Softmax-free Transformer with LinearComplexity}, 
+    author={Lu, Jiachen and Yao, Jinghan and Zhang, Junge and Zhu, Xiatian and Xu, Hang and Gao, Weiguo and Xu, Chunjing and Xiang, Tao and Zhang, Li},
+    booktitle={NeurIPS},
     year={2021}
 }
 ```
