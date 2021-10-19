@@ -1,4 +1,4 @@
-# SOFT: Softmax-free Transformer with LinearComplexity
+# SOFT: Softmax-free Transformer with Linear Complexity
 
 ![image](resources/structure.png)
 
@@ -22,7 +22,7 @@ python -m pip install -e SOFT
 
 ## Main results
 ### Image Classification
-#### ImageNet-1k
+#### ImageNet-1
 
 | Model       | Resolution | Params | FLOPs | Top-1 % |
 |-------------|:----------:|:------:|:-----:|:-------:|
