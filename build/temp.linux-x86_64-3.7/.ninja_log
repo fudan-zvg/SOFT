@@ -1,9 +1,0 @@
-# ninja log v5
-1	470	1622425314480862755	/home/lujiachen/Documents/pvt_t2t_al/SOFT/build/temp.linux-x86_64-3.7/home/lujiachen/Documents/pvt_t2t_al/SOFT/SOFT/kernel/csrc/cuda_version.o	bf14072b83bb304
-1	8874	1622425322884862659	/home/lujiachen/Documents/pvt_t2t_al/SOFT/build/temp.linux-x86_64-3.7/home/lujiachen/Documents/pvt_t2t_al/SOFT/SOFT/kernel/csrc/subtraction/GaussianSubtraction_cuda_kernel.o	8b39ec4829d1bdc3
-0	10942	1622425324952862635	/home/lujiachen/Documents/pvt_t2t_al/SOFT/build/temp.linux-x86_64-3.7/home/lujiachen/Documents/pvt_t2t_al/SOFT/SOFT/kernel/csrc/subtraction/GaussianSubtraction_cuda.o	9f34e5c53629a789
-0	14861	1622425647976858948	/home/lujiachen/Documents/pvt_t2t_al/SOFT/build/temp.linux-x86_64-3.7/home/lujiachen/Documents/pvt_t2t_al/SOFT/SOFT/kernel/csrc/vision.o	f103999e9937b31b
-3	442	1631359733016978649	/home/lujiachen/Documents/pvt_t2t_al/SOFT/build/temp.linux-x86_64-3.7/home/lujiachen/Documents/pvt_t2t_al/SOFT/SOFT/kernel/csrc/cuda_version.o	da0f4bca37728eb6
-3	8977	1631359741552978551	/home/lujiachen/Documents/pvt_t2t_al/SOFT/build/temp.linux-x86_64-3.7/home/lujiachen/Documents/pvt_t2t_al/SOFT/SOFT/kernel/csrc/subtraction/GaussianSubtraction_cuda_kernel.o	f3dd56b697de01ce
-2	11158	1631359743728978526	/home/lujiachen/Documents/pvt_t2t_al/SOFT/build/temp.linux-x86_64-3.7/home/lujiachen/Documents/pvt_t2t_al/SOFT/SOFT/kernel/csrc/subtraction/GaussianSubtraction_cuda.o	ff4d4489dc69f7b0
-3	15891	1631359748460978472	/home/lujiachen/Documents/pvt_t2t_al/SOFT/build/temp.linux-x86_64-3.7/home/lujiachen/Documents/pvt_t2t_al/SOFT/SOFT/kernel/csrc/vision.o	a555c994b139acf1
