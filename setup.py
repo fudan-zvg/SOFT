@@ -1,6 +1,3 @@
-#!/usr/bin/env python
-# Copyright (c) Facebook, Inc. and its affiliates.
-
 import glob
 import os
 import shutil
@@ -154,7 +151,7 @@ def get_extensions():
 setup(
     name="SOFT",
     # version=get_version(),
-    author="FUDAN-zvg + HUAWEI noah",
+    author="FUDAN-zvg + HUAWEI Noah's Arks Lab + University of Surrey",
     description="SOFT:softmax-free transformer ",
     python_requires=">=3.6",
     ext_modules=get_extensions(),
