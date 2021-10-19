@@ -1,14 +1,3 @@
-# Copyright (c) [2012]-[2021] Shanghai Yitu Technology Co., Ltd.
-#
-# This source code is licensed under the Clear BSD License
-# LICENSE file in the root directory of this file
-# All rights reserved.
-"""
-T2T-ViT training and evaluating script
-This script is modified from pytorch-image-models by Ross Wightman (https://github.com/rwightman/pytorch-image-models/)
-It was started from an early version of the PyTorch ImageNet example
-(https://github.com/pytorch/examples/tree/master/imagenet)
-"""
 import argparse
 import time
 import yaml
