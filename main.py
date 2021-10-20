@@ -312,9 +312,9 @@ def main():
         drop_block_rate=None,
         newton_max_iter=args.newton_maxiter)
 
-    linear_scaled_lr = args.lr * args.batch_size * args.world_size / 512.0
+    linear_scaled_lr = args.lr * args.batch_size * args.world_size / 1024.0
     args.lr = linear_scaled_lr
-    print("learning rate is %f" % linear_scaled_lr)
+    _logger.info("learning rate is %f" % linear_scaled_lr)
 
     if args.local_rank == 0:
         _logger.info('Model %s created, param count: %d' %
