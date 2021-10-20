@@ -271,7 +271,6 @@ def _parse_args():
 
 def main():
     setup_default_logging()
-    # torch.set_default_dtype(torch.float64)
     args, args_text = _parse_args()
 
     args.prefetcher = not args.no_prefetcher
@@ -530,7 +529,7 @@ def main():
     best_epoch = None
 
     if args.eval:  # evaluate the model
-        # load_checkpoint(model, args.eval_checkpoint, args.model_ema)
+        load_checkpoint(model, args.eval_checkpoint, args.model_ema)
         val_metrics = validate(model, loader_eval, validate_loss_fn, args)
         print(f"Top-1 accuracy of the model is: {val_metrics['top1']:.1f}%")
         return
@@ -553,7 +552,6 @@ def main():
             f.write(args_text)
 
     try:  # train the model
-        # if "pvt" in args.model:
         if args.reset_drop:
             model_without_ddp.reset_drop_path(0.0)
         for epoch in range(start_epoch, args.epochs):
@@ -624,7 +622,6 @@ def train_epoch(
     last_idx = len(loader) - 1
     num_updates = epoch * len(loader)
     for batch_idx, (input, target) in enumerate(loader):
-        # input = input.type(torch.float64)
         last_batch = batch_idx == last_idx
         data_time_m.update(time.time() - end)
         if not args.prefetcher:
