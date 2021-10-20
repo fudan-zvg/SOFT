@@ -55,7 +55,7 @@ work_dirs/SETR_PUP_768x768_40k_cityscapes_bs_8/iter_40000.pth \
 
 ```bibtex
 @inproceedings{SOFT,
-    title={SOFT: Softmax-free Transformer with LinearComplexity}, 
+    title={SOFT: Softmax-free Transformer with Linear Complexity}, 
     author={Lu, Jiachen and Yao, Jinghan and Zhang, Junge and Zhu, Xiatian and Xu, Hang and Gao, Weiguo and Xu, Chunjing and Xiang, Tao and Zhang, Li},
     booktitle={NeurIPS},
     year={2021}
