@@ -14,6 +14,24 @@ torch>=1.7.0 and torchvision that matches the PyTorch installation
 
 cuda>=10.2
 
+### Data preparation
+
+Download and extract ImageNet train and val images from http://image-net.org/.
+The directory structure is the standard layout for the torchvision [`datasets.ImageFolder`](https://pytorch.org/docs/stable/torchvision/datasets.html#imagefolder), and the training and validation data is expected to be in the `train/` folder and `val` folder respectively:
+
+```
+/path/to/imagenet/
+  train/
+    class1/
+      img1.jpeg
+    class2/
+      img2.jpeg
+  val/
+    class1/
+      img3.jpeg
+    class/2
+      img4.jpeg
+```
 ## Installation
 ```shell script
 git clone https://github.com/fudan-zvg/SOFT.git
