@@ -42,13 +42,17 @@ python -m pip install -e SOFT
 ./dist_train.sh 8 --data ${DATA_PATH} --config config/SOFT_Tiny.yaml
 ```
 
-### Test
+[comment]: <> (### Test)
 
-```shell
-./dist_train.sh ${GPU_NUM} --data ${DATA_PATH} --config ${CONFIG_FILE} --eval
-# For example, test SOFT-Tiny on Imagenet validation dataset with 8 GPUs
-./dist_train.sh 8 --data ${DATA_PATH} --config config/SOFT_Tiny.yaml -eval
-```
+[comment]: <> (```shell)
+
+[comment]: <> (./dist_train.sh ${GPU_NUM} --data ${DATA_PATH} --config ${CONFIG_FILE} --eval)
+
+[comment]: <> (# For example, test SOFT-Tiny on Imagenet validation dataset with 8 GPUs)
+
+[comment]: <> (./dist_train.sh 8 --data ${DATA_PATH} --config config/SOFT_Tiny.yaml -eval)
+
+[comment]: <> (```)
 ## Reference
 
 ```bibtex
