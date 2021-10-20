@@ -1,0 +1,8 @@
+model: "soft_tiny"
+newton-maxiter: 20
+lr: 1e-3
+min-lr: 5e-5
+warmup-epochs: 10
+batch-size: 128
+epochs: 300
+clip-grad: 1.0

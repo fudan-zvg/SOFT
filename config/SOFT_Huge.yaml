@@ -1,0 +1,8 @@
+model: "soft_huge"
+newton-maxiter: 20
+lr: 2.7e-4
+min-lr: 5e-5
+warmup-epochs: 10
+batch-size: 32
+epochs: 300
+clip-grad: 1.0
