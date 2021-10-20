@@ -16,7 +16,7 @@ cuda>=10.2
 
 ## Installation
 ```shell script
-https://github.com/fudan-zvg/SOFT.git
+git clone https://github.com/fudan-zvg/SOFT.git
 python -m pip install -e SOFT
 ```
 
@@ -24,32 +24,30 @@ python -m pip install -e SOFT
 ### Image Classification
 #### ImageNet-1K
 
-| Model       | Resolution | Params | FLOPs | Top-1 % |
-|-------------|:----------:|:------:|:-----:|:-------:|
-| SOFT-Tiny   | 224        | 13M    | 1.9G  | 79.3    |
-| SOFT-Small  | 224        | 24M    | 3.3G  | 82.2    |
-| SOFT-Medium | 224        | 25M    | 7.2G  | 82.9    |
-| SOFT-Large  | 224        | 64M    | 11.0G | 83.1    |
-| SOFT-Huge   | 224        | 87M    | 16.3G | 83.3    |
+| Model       | Resolution | Params | FLOPs | Top-1 % | Config |
+|-------------|:----------:|:------:|:-----:|:-------:|--------|
+| SOFT-Tiny   | 224        | 13M    | 1.9G  | 79.3    |[SOFT_Tiny.yaml](config/SOFT_Tiny.yaml)|
+| SOFT-Small  | 224        | 24M    | 3.3G  | 82.2    |[SOFT_Small.yaml](config/SOFT_Small.yaml)|
+| SOFT-Medium | 224        | 25M    | 7.2G  | 82.9    |[SOFT_Meidum.yaml](config/SOFT_Medium.yaml)|
+| SOFT-Large  | 224        | 64M    | 11.0G | 83.1    |[SOFT_Large.yaml](config/SOFT_Large.yaml)|
+| SOFT-Huge   | 224        | 87M    | 16.3G | 83.3    |[SOFT_Huge.yaml](config/SOFT_Huge.yaml)|
 
 ## Get Started
 
 ### Train
 
 ```shell
-./tools/dist_train.sh ${CONFIG_FILE} ${GPU_NUM} 
-# For example, train a SETR-PUP on Cityscapes dataset with 8 GPUs
-./tools/dist_train.sh configs/SETR/SETR_PUP_768x768_40k_cityscapes_bs_8.py 8
+./dist_train.sh ${GPU_NUM} --data ${DATA_PATH} --config ${CONFIG_FILE}
+# For example, train SOFT-Tiny on Imagenet training dataset with 8 GPUs
+./dist_train.sh 8 --data ${DATA_PATH} --config config/SOFT_Tiny.yaml
 ```
 
 ### Test
 
 ```shell
-./tools/dist_test.sh ${CONFIG_FILE} ${CHECKPOINT_FILE} ${GPU_NUM}  [--eval ${EVAL_METRICS}]
-# For example, test a SETR-PUP on Cityscapes dataset with 8 GPUs
-./tools/dist_test.sh configs/SETR/SETR_PUP_768x768_40k_cityscapes_bs_8.py \
-work_dirs/SETR_PUP_768x768_40k_cityscapes_bs_8/iter_40000.pth \
-8 --eval mIoU
+./dist_train.sh ${GPU_NUM} --data ${DATA_PATH} --config ${CONFIG_FILE} --eval
+# For example, test SOFT-Tiny on Imagenet validation dataset with 8 GPUs
+./dist_train.sh 8 --data ${DATA_PATH} --config config/SOFT_Tiny.yaml -eval
 ```
 ## Reference
 
@@ -72,4 +70,5 @@ MIT
 Thanks to previous open-sourced repo:  
 [Detectron2](https://github.com/facebookresearch/detectron2)     
 [T2T-ViT](https://github.com/yitu-opensource/T2T-ViT)  
+[Nystromformer](https://github.com/mlpen/Nystromformer)
 
