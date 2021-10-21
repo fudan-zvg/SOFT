@@ -59,7 +59,7 @@ python -m pip install -e SOFT
 We have two implementations of Gaussian Kernel: the trick implemented by `PyTorch` and 
 the exact form of Gaussian function implemented by `cuda`. The config file containing `cuda` is the 
 cuda implementation. We **recommend** using the `cuda` version for its better numerical stability. 
-Please **install** SOFT before running the `cuda` version.
+Please **install** SOFT before running the `cuda` version. Both implementations yield same performance.
 ```shell
 ./dist_train.sh ${GPU_NUM} --data ${DATA_PATH} --config ${CONFIG_FILE}
 # For example, train SOFT-Tiny on Imagenet training dataset with 8 GPUs
