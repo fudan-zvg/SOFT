@@ -8,11 +8,14 @@
 
 
 ## Requirments
-timm
+* timm==0.3.2
 
-torch>=1.7.0 and torchvision that matches the PyTorch installation
+* torch>=1.7.0 and torchvision that matches the PyTorch installation
 
-cuda>=10.2
+* cuda>=10.2
+
+Compilation may be fail on cuda < 10.2.  
+We have compiled it successfully on `cuda 10.2` and `cuda 11.2`. 
 
 ### Data preparation
 
