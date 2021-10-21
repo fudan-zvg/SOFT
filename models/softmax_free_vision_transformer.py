@@ -235,7 +235,6 @@ class SoftmaxFreeVisionTransformer(nn.Module):
         for blk in self.block1:
             x = blk(x)
         x = x.reshape(B, H, W, -1).permute(0, 3, 1, 2).contiguous()
-        # vis_heatmap(heatmap1, 2)
 
         # stage 2
         x, (H, W) = self.patch_embed2(x)
@@ -244,7 +243,6 @@ class SoftmaxFreeVisionTransformer(nn.Module):
         for blk in self.block2:
             x = blk(x)
         x = x.reshape(B, H, W, -1).permute(0, 3, 1, 2).contiguous()
-        # vis_heatmap(heatmap2, 3)
 
         # stage 3
         x, (H, W) = self.patch_embed3(x)
@@ -253,7 +251,6 @@ class SoftmaxFreeVisionTransformer(nn.Module):
         for blk in self.block3:
             x = blk(x)
         x = x.reshape(B, H, W, -1).permute(0, 3, 1, 2).contiguous()
-        # vis_heatmap(heatmap3, 4)
 
         # stage 4
         x, (H, W) = self.patch_embed4(x)
@@ -263,7 +260,6 @@ class SoftmaxFreeVisionTransformer(nn.Module):
         x = self.pos_drop4(x)
         for blk in self.block4:
             x = blk(x, H, W)
-        # vis_heatmap(heatmap4, 5)
 
         x = self.norm(x)
         return x[:, 0]
