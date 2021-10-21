@@ -44,16 +44,19 @@ python -m pip install -e SOFT
 
 | Model       | Resolution | Params | FLOPs | Top-1 % | Config |
 |-------------|:----------:|:------:|:-----:|:-------:|--------|
-| SOFT-Tiny   | 224        | 13M    | 1.9G  | 79.3    |[SOFT_Tiny.yaml](config/SOFT_Tiny.yaml)|
-| SOFT-Small  | 224        | 24M    | 3.3G  | 82.2    |[SOFT_Small.yaml](config/SOFT_Small.yaml)|
-| SOFT-Medium | 224        | 45M    | 7.2G  | 82.9    |[SOFT_Meidum.yaml](config/SOFT_Medium.yaml)|
-| SOFT-Large  | 224        | 64M    | 11.0G | 83.1    |[SOFT_Large.yaml](config/SOFT_Large.yaml)|
-| SOFT-Huge   | 224        | 87M    | 16.3G | 83.3    |[SOFT_Huge.yaml](config/SOFT_Huge.yaml)|
+| SOFT-Tiny   | 224        | 13M    | 1.9G  | 79.3    |[SOFT_Tiny.yaml](config/SOFT_Tiny.yaml), [SOFT_Tiny_cuda.yaml](config/SOFT_Tiny_cuda.yaml)|
+| SOFT-Small  | 224        | 24M    | 3.3G  | 82.2    |[SOFT_Small.yaml](config/SOFT_Small.yaml), [SOFT_Small_cuda.yaml](config/SOFT_Small_cuda.yaml)|
+| SOFT-Medium | 224        | 45M    | 7.2G  | 82.9    |[SOFT_Meidum.yaml](config/SOFT_Medium.yaml), [SOFT_Meidum_cuda.yaml](config/SOFT_Medium_cuda.yaml)|
+| SOFT-Large  | 224        | 64M    | 11.0G | 83.1    |[SOFT_Large.yaml](config/SOFT_Large.yaml), [SOFT_Large_cuda.yaml](config/SOFT_Large_cuda.yaml)|
+| SOFT-Huge   | 224        | 87M    | 16.3G | 83.3    |[SOFT_Huge.yaml](config/SOFT_Huge.yaml), [SOFT_Huge_cuda.yaml](config/SOFT_Huge_cuda.yaml)|
 
 ## Get Started
 
 ### Train
-
+We have two implementations of Gaussian Kernel: the trick implemented by `PyTorch` and 
+the exact form of Gaussian function implemented by `cuda`. The config file containing `cuda` is the 
+cuda implementation. We recommend using the `cuda` version for its better numerical stability. 
+Please install SOFT before running the `cuda` version.
 ```shell
 ./dist_train.sh ${GPU_NUM} --data ${DATA_PATH} --config ${CONFIG_FILE}
 # For example, train SOFT-Tiny on Imagenet training dataset with 8 GPUs

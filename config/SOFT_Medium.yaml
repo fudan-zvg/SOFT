@@ -6,3 +6,4 @@ warmup-epochs: 10
 batch-size: 32
 epochs: 300
 clip-grad: 1.0
+kernel-method: "torch"

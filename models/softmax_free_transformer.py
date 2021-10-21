@@ -26,7 +26,7 @@ def subtraction_gaussian_kernel_torch(q, k):
 
 
 class SoftmaxFreeAttentionKernel(nn.Module):
-    def __init__(self, dim, num_heads, q_len, k_len, num_landmark, use_conv, max_iter=20, kernel_method="torch"):
+    def __init__(self, dim, num_heads, q_len, k_len, num_landmark, use_conv, max_iter=20, kernel_method="cuda"):
         super().__init__()
 
         self.head_dim = int(dim // num_heads)
@@ -133,7 +133,7 @@ class SoftmaxFreeAttentionKernel(nn.Module):
 
 
 class SoftmaxFreeAttention(nn.Module):
-    def __init__(self, dim, num_heads, q_len, k_len, num_landmark, conv_size, max_iter=20, kernel_method="torch"):
+    def __init__(self, dim, num_heads, q_len, k_len, num_landmark, conv_size, max_iter=20, kernel_method="cuda"):
         super().__init__()
 
         self.grad_checkpointing = True
@@ -209,7 +209,7 @@ class SoftmaxFreeTransformer(nn.Module):
 
 
 class SoftmaxFreeTrasnformerBlock(nn.Module):
-    def __init__(self, dim, num_heads, H, W, drop_path=0., conv_size=3, max_iter=20, kernel_method="torch"):
+    def __init__(self, dim, num_heads, H, W, drop_path=0., conv_size=3, max_iter=20, kernel_method="cuda"):
         super().__init__()
         seq_len = 49
         self.att = SoftmaxFreeTransformer(dim, num_heads, int(H*W), int(H*W), seq_len, conv_size, drop_path, max_iter, kernel_method)
