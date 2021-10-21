@@ -91,7 +91,8 @@ MIT
 
 Thanks to previous open-sourced repo:  
 [Detectron2](https://github.com/facebookresearch/detectron2)   
-[pytorch-image-models](https://github.com/rwightman/pytorch-image-models) 
 [T2T-ViT](https://github.com/yitu-opensource/T2T-ViT)  
 [Nystromformer](https://github.com/mlpen/Nystromformer)
+[pytorch-image-models](https://github.com/rwightman/pytorch-image-models) 
+
 
