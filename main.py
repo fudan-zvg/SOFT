@@ -176,6 +176,8 @@ parser.add_argument('--newton-maxiter', default=20, type=int,
                     help='max iterration in newton method')
 parser.add_argument('--reset-drop', action='store_true', default=False,
                     help='whether to reset drop')
+parser.add_argument('--kernel-method', type=str, default='torch', choices=['torch', 'cuda'],
+                    help='The implementation way of gaussian kernel method, choose from "cuda" and "torch"')
 
 # Batch norm parameters (only works with gen_efficientnet based models currently)
 parser.add_argument('--bn-tf', action='store_true', default=False,
@@ -309,7 +311,9 @@ def main():
         drop_rate=args.drop,
         drop_path_rate=args.drop_path,
         drop_block_rate=None,
-        newton_max_iter=args.newton_maxiter)
+        newton_max_iter=args.newton_maxiter,
+        kernel_method=args.kernel_method,
+    )
 
     linear_scaled_lr = args.lr * args.batch_size * args.world_size / 1024.0
     args.lr = linear_scaled_lr

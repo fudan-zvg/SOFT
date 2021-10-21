@@ -129,15 +129,6 @@ class SoftmaxFreeAttentionKernel(nn.Module):
 
         for i in range(self.max_iter):
             V = 2 * V - V @ P @ V
-            # print('V', i, torch.norm(torch.abs((V @ P @ V - V))[0][0], dim=(-1,-2)))
-            # print(float(torch.norm(torch.abs((P @ V @ P - P))[0][0], p=float('inf'), dim=(-1, -2))) / float(torch.norm(P, p=float('inf'), dim=(-1, -2))), ',')
-            # print(float(torch.norm(torch.abs((P @ V @ P - P))[0][0], dim=(-1, -2))) / float(torch.norm(P[0][0], dim=(-1, -2))), ',')
-            # V = 2 * V
-            # print('V: %d' % i, V[0][0])
-        # print(i)
-        # print((P@V)[0][0])
-        # print((V @ P @ V - V)[0][0])
-        # input()
         return V
 
 

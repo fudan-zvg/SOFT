@@ -290,8 +290,7 @@ def _conv_filter(state_dict, patch_size=16):
 def soft_tiny(pretrained=False, **kwargs):
     model = SoftmaxFreeVisionTransformer(
         patch_size=4, embed_dims=[64, 128, 320, 512], num_heads=[2, 4, 10, 16], mlp_ratios=[8, 8, 4, 4], qkv_bias=True,
-        norm_layer=partial(nn.LayerNorm, eps=1e-6), depths=[1, 2, 3, 2], sr_ratios=[8, 4, 2, 1],
-        # drop_rate=0.0, drop_path_rate=0.1)
+        norm_layer=partial(nn.LayerNorm, eps=1e-6), depths=[1, 2, 3, 2], sr_ratios=[8, 4, 2, 1], kernel_method="torch",
         **kwargs)
     model.default_cfg = _cfg()
     return model
@@ -301,7 +300,7 @@ def soft_tiny(pretrained=False, **kwargs):
 def soft_small(pretrained=False, **kwargs):
     model = SoftmaxFreeVisionTransformer(
         patch_size=4, embed_dims=[64, 128, 320, 512], num_heads=[2, 4, 10, 16], mlp_ratios=[8, 8, 4, 4], qkv_bias=True,
-        norm_layer=partial(nn.LayerNorm, eps=1e-6), depths=[1, 3, 20, 4], sr_ratios=[8, 4, 2, 1],
+        norm_layer=partial(nn.LayerNorm, eps=1e-6), depths=[1, 3, 20, 4], sr_ratios=[8, 4, 2, 1], kernel_method="torch",
         **kwargs)
     model.default_cfg = _cfg()
     return model
@@ -311,7 +310,7 @@ def soft_small(pretrained=False, **kwargs):
 def soft_medium(pretrained=False, **kwargs):
     model = SoftmaxFreeVisionTransformer(
         patch_size=4, embed_dims=[64, 128, 288, 512], num_heads=[2, 4, 9, 16], mlp_ratios=[8, 8, 4, 4], qkv_bias=True,
-        norm_layer=partial(nn.LayerNorm, eps=1e-6), depths=[1, 3, 29, 5], sr_ratios=[8, 4, 2, 1],
+        norm_layer=partial(nn.LayerNorm, eps=1e-6), depths=[1, 3, 29, 5], sr_ratios=[8, 4, 2, 1], kernel_method="torch",
         **kwargs)
     model.default_cfg = _cfg()
     return model
@@ -321,7 +320,7 @@ def soft_medium(pretrained=False, **kwargs):
 def soft_large(pretrained=False, **kwargs):
     model = SoftmaxFreeVisionTransformer(
         patch_size=4, embed_dims=[64, 128, 320, 512], num_heads=[2, 4, 10, 16], mlp_ratios=[8, 8, 4, 4], qkv_bias=True,
-        norm_layer=partial(nn.LayerNorm, eps=1e-6), depths=[1, 3, 40, 5], sr_ratios=[8, 4, 2, 1],
+        norm_layer=partial(nn.LayerNorm, eps=1e-6), depths=[1, 3, 40, 5], sr_ratios=[8, 4, 2, 1], kernel_method="torch",
         **kwargs)
     model.default_cfg = _cfg()
     return model
@@ -331,7 +330,7 @@ def soft_large(pretrained=False, **kwargs):
 def soft_huge(pretrained=False, **kwargs):
     model = SoftmaxFreeVisionTransformer(
         patch_size=4, embed_dims=[64, 128, 352, 512], num_heads=[2, 4, 11, 16], mlp_ratios=[8, 8, 4, 4], qkv_bias=True,
-        norm_layer=partial(nn.LayerNorm, eps=1e-6), depths=[1, 5, 49, 5], sr_ratios=[8, 4, 2, 1],
+        norm_layer=partial(nn.LayerNorm, eps=1e-6), depths=[1, 5, 49, 5], sr_ratios=[8, 4, 2, 1], kernel_method="torch",
         **kwargs)
     model.default_cfg = _cfg()
     return model

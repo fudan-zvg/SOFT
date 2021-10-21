@@ -84,15 +84,15 @@ python -m pip install -e SOFT
 
 ## License
 
-MIT
+[MIT](LICENSE)
 
 
 ## Acknowledgement
 
 Thanks to previous open-sourced repo:  
-[Detectron2](https://github.com/facebookresearch/detectron2)     
+[Detectron2](https://github.com/facebookresearch/detectron2) 
 [T2T-ViT](https://github.com/yitu-opensource/T2T-ViT)  
-[PVT](https://github.com/whai362/PVT)
-[Nystromformer](https://github.com/mlpen/Nystromformer)
-[timm](https://github.com/rwightman/pytorch-image-models)
+[PVT](https://github.com/whai362/PVT)   
+[Nystromformer](https://github.com/mlpen/Nystromformer)   
+[timm](https://github.com/rwightman/pytorch-image-models)  
 
