@@ -1,9 +1,9 @@
 model: "soft_medium"
-newton-maxiter: 20
+newton_maxiter: 20
 lr: 3.5e-4
-min-lr: 5e-5
-warmup-epochs: 10
-batch-size: 32
+min_lr: 5e-5
+warmup_epochs: 10
+batch_size: 32
 epochs: 300
-clip-grad: 1.0
-kernel-method: "torch"
+clip_grad: 1.0
+kernel_method: "torch"
