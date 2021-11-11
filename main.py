@@ -533,7 +533,18 @@ def main():
     best_epoch = None
 
     if args.eval:  # evaluate the model
-        load_checkpoint(model, args.eval_checkpoint, args.model_ema)
+        if args.distributed:
+            state_dict=torch.load(args.eval_checkpoint)['state_dict_ema']
+            new_state_dict=OrderedDict()
+            # add module prefix for DDP
+            for k,v in state_dict.items():
+                k='module.'+k
+                new_state_dict[k]=v
+
+            model.load_state_dict(new_state_dict)
+        else:
+            load_checkpoint(model, args.eval_checkpoint, args.model_ema)
+            
         val_metrics = validate(model, loader_eval, validate_loss_fn, args)
         print(f"Top-1 accuracy of the model is: {val_metrics['top1']:.1f}%")
         return
