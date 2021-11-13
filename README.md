@@ -47,7 +47,7 @@ python -m pip install -e SOFT
 
 | Model       | Resolution | Params | FLOPs | Top-1 % | Config |Pretrained Model|
 |-------------|:----------:|:------:|:-----:|:-------:|--------|--------
-| SOFT-Tiny   | 224        | 13M    | 1.9G  | 79.3    |[SOFT_Tiny.yaml](config/SOFT_Tiny.yaml), [SOFT_Tiny_cuda.yaml](config/SOFT_Tiny_cuda.yaml)|[SOFT_Tiny](https://drive.google.com/file/d/1S04DCotIOkP0DaBb8WStQ513z82qT9de/view?usp=sharing)
+| SOFT-Tiny   | 224        | 13M    | 1.9G  | 79.3    |[SOFT_Tiny.yaml](config/SOFT_Tiny.yaml), [SOFT_Tiny_cuda.yaml](config/SOFT_Tiny_cuda.yaml)|[SOFT_Tiny](https://drive.google.com/file/d/1S04DCotIOkP0DaBb8WStQ513z82qT9de/view?usp=sharing), [SOFT_Tiny_cuda](https://drive.google.com/file/d/1inDKh3Wz_2KQgGH_2ywU5H_gLKZpIz_u/view?usp=sharing)
 | SOFT-Small  | 224        | 24M    | 3.3G  | 82.2    |[SOFT_Small.yaml](config/SOFT_Small.yaml), [SOFT_Small_cuda.yaml](config/SOFT_Small_cuda.yaml)|
 | SOFT-Medium | 224        | 45M    | 7.2G  | 82.9    |[SOFT_Meidum.yaml](config/SOFT_Medium.yaml), [SOFT_Meidum_cuda.yaml](config/SOFT_Medium_cuda.yaml)|
 | SOFT-Large  | 224        | 64M    | 11.0G | 83.1    |[SOFT_Large.yaml](config/SOFT_Large.yaml), [SOFT_Large_cuda.yaml](config/SOFT_Large_cuda.yaml)|
