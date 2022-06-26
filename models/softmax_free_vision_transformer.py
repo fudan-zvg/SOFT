@@ -102,7 +102,6 @@ class Block(nn.Module):
 class PatchEmbed(nn.Module):
     """ Image to Patch Embedding
     """
-
     def __init__(self, img_size=224, kernel_size=7, patch_size=16, in_chans=3, embed_dim=768):
         super().__init__()
         img_size = to_2tuple(img_size)
@@ -126,19 +125,31 @@ class PatchEmbed(nn.Module):
                                       nn.BatchNorm2d(embed_dim), nn.ReLU())
 
     def forward(self, x):
-        B, C, H, W = x.shape
-
-        x = self.proj(x).flatten(2).transpose(1, 2)
-        H, W = H // self.patch_size[0], W // self.patch_size[1]
-
+        x = self.proj(x)
+        H, W = x.shape[2:]
+        x = x.flatten(2).transpose(1, 2)
         return x, (H, W)
 
 
 class SoftmaxFreeVisionTransformer(nn.Module):
-    def __init__(self, img_size=224, patch_size=16, in_chans=3, num_classes=1000, embed_dims=[64, 128, 256, 512],
-                 num_heads=[1, 2, 4, 8], mlp_ratios=[4, 4, 4, 4], qkv_bias=False, qk_scale=None, drop_rate=0.,
-                 attn_drop_rate=0., drop_path_rate=0., norm_layer=nn.LayerNorm,
-                 depths=[3, 4, 6, 3], sr_ratios=[8, 4, 2, 1], newton_max_iter=20, kernel_method="cuda"):
+    def __init__(self, 
+                 img_size=224, 
+                 patch_size=16, 
+                 in_chans=3, 
+                 num_classes=1000, 
+                 embed_dims=[64, 128, 256, 512],
+                 num_heads=[1, 2, 4, 8], 
+                 mlp_ratios=[4, 4, 4, 4], 
+                 qkv_bias=False, 
+                 qk_scale=None, 
+                 drop_rate=0.,
+                 attn_drop_rate=0., 
+                 drop_path_rate=0., 
+                 norm_layer=nn.LayerNorm,
+                 depths=[3, 4, 6, 3], 
+                 sr_ratios=[8, 4, 2, 1], 
+                 newton_max_iter=20, 
+                 kernel_method="cuda"):
         super().__init__()
         self.num_classes = num_classes
         self.depths = depths
@@ -166,20 +177,20 @@ class SoftmaxFreeVisionTransformer(nn.Module):
         # transformer encoder
         dpr = [x.item() for x in torch.linspace(0, drop_path_rate, sum(depths))]  # stochastic depth decay rule
         cur = 0
-        self.block1 = nn.ModuleList([SoftmaxFreeTrasnformerBlock(
-            dim=embed_dims[0], num_heads=num_heads[0], drop_path=dpr[cur + i], H=56, W=56, conv_size=9,
+        self.block1 = nn.ModuleList([SoftmaxFreeTransformerBlock(
+            dim=embed_dims[0], num_heads=num_heads[0], drop_path=dpr[cur + i], ratio=sr_ratios[0], conv_size=9,
             max_iter=newton_max_iter, kernel_method=kernel_method)
             for i in range(depths[0])])
 
         cur += depths[0]
-        self.block2 = nn.ModuleList([SoftmaxFreeTrasnformerBlock(
-            dim=embed_dims[1], num_heads=num_heads[1], drop_path=dpr[cur + i], H=28, W=28, conv_size=5,
+        self.block2 = nn.ModuleList([SoftmaxFreeTransformerBlock(
+            dim=embed_dims[1], num_heads=num_heads[1], drop_path=dpr[cur + i], ratio=sr_ratios[1], conv_size=5,
             max_iter=newton_max_iter, kernel_method=kernel_method)
             for i in range(depths[1])])
 
         cur += depths[1]
-        self.block3 = nn.ModuleList([SoftmaxFreeTrasnformerBlock(
-            dim=embed_dims[2], num_heads=num_heads[2], drop_path=dpr[cur + i], H=14, W=14, conv_size=3,
+        self.block3 = nn.ModuleList([SoftmaxFreeTransformerBlock(
+            dim=embed_dims[2], num_heads=num_heads[2], drop_path=dpr[cur + i], ratio=sr_ratios[2], conv_size=3,
             max_iter=newton_max_iter, kernel_method=kernel_method)
             for i in range(depths[2])])
 
@@ -230,34 +241,50 @@ class SoftmaxFreeVisionTransformer(nn.Module):
 
         # stage 1
         x, (H, W) = self.patch_embed1(x)
-        x = x + self.pos_embed1
+        Bp, Np, Cp = self.pos_embed1.shape
+        pos_embed1 = rearrange(self.pos_embed1, 'b (h w) c -> b c h w', h=int(Np ** 0.5), w=int(Np ** 0.5))
+        pos_embed1 = F.interpolate(pos_embed1, size=(H, W), mode='bilinear', align_corners=False)
+        pos_embed1 = pos_embed1.flatten(2).transpose(-1, -2)
+        x = x + pos_embed1
         x = self.pos_drop1(x)
         for blk in self.block1:
-            x = blk(x)
+            x = blk(x, H, W)
         x = x.reshape(B, H, W, -1).permute(0, 3, 1, 2).contiguous()
 
         # stage 2
         x, (H, W) = self.patch_embed2(x)
-        x = x + self.pos_embed2
+        Bp, Np, Cp = self.pos_embed2.shape
+        pos_embed2 = rearrange(self.pos_embed2, 'b (h w) c -> b c h w', h=int(Np ** 0.5), w=int(Np ** 0.5))
+        pos_embed2 = F.interpolate(pos_embed2, size=(H, W), mode='bilinear', align_corners=False)
+        pos_embed2 = pos_embed2.flatten(2).transpose(-1, -2)
+        x = x + pos_embed2
         x = self.pos_drop2(x)
         for blk in self.block2:
-            x = blk(x)
+            x = blk(x, H, W)
         x = x.reshape(B, H, W, -1).permute(0, 3, 1, 2).contiguous()
 
         # stage 3
         x, (H, W) = self.patch_embed3(x)
-        x = x + self.pos_embed3
+        Bp, Np, Cp = self.pos_embed3.shape
+        pos_embed3 = rearrange(self.pos_embed3, 'b (h w) c -> b c h w', h=int(Np ** 0.5), w=int(Np ** 0.5))
+        pos_embed3 = F.interpolate(pos_embed3, size=(H, W), mode='bilinear', align_corners=False)
+        pos_embed3 = pos_embed3.flatten(2).transpose(-1, -2)
+        x = x + pos_embed3
         x = self.pos_drop3(x)
         for blk in self.block3:
-            x = blk(x)
+            x = blk(x, H, W)
         x = x.reshape(B, H, W, -1).permute(0, 3, 1, 2).contiguous()
 
         # stage 4
         x, (H, W) = self.patch_embed4(x)
+        Bp, Np, Cp = self.pos_embed4.shape
+        pos_embed4 = rearrange(self.pos_embed4[:, 1:, :], 'b (h w) c -> b c h w', h=int(Np ** 0.5), w=int(Np ** 0.5))
+        pos_embed4 = F.interpolate(pos_embed4, size=(H, W), mode='bilinear', align_corners=False)
+        pos_embed4 = rearrange(pos_embed4, 'b c h w -> b (h w) c')
+        pos_embed4 = torch.cat((self.pos_embed4[:, 0, :].unsqueeze(1), pos_embed4), dim=1)
         cls_tokens = self.cls_token.expand(B, -1, -1)
         x = torch.cat((cls_tokens, x), dim=1)
-        x = x + self.pos_embed4
-        x = self.pos_drop4(x)
+        x = x + pos_embed4
         for blk in self.block4:
             x = blk(x, H, W)
 
