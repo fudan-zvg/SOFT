@@ -1,4 +1,18 @@
 /SOFT.egg-info/
-/.idea/
+.vscode
+.idea
+.DS_Store
 /build/
-/SOFT/kernel/.idea/
+
+# custom
+*.pkl
+*.pkl.json
+*.log.json
+docs/modelzoo_statistics.md
+mmdet/.mim
+work_dirs/
+
+# Pytorch
+*.pth
+*.py~
+*.sh~
