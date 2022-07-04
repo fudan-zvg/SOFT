@@ -6,6 +6,8 @@
 > Jiachen Lu, Jinghan Yao, Junge Zhang, Xiatian Zhu, Hang Xu, Weiguo Gao, Chunjing Xu, Tao Xiang, Li Zhang,        
 > *NeurIPS 2021 Spotlight* 
 
+## NEWS
+- [2022/07/05] SOFT is now available for downstream tasks! An efficient normalization is applied to SOFT. Please refer to [SOFT-Norm](https://github.com/fudan-zvg/SOFT/tree/normalization)
 
 ## Requirments
 * timm==0.3.2
