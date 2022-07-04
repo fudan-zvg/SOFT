@@ -10,7 +10,7 @@ from einops import rearrange
 from timm.models.layers import DropPath, to_2tuple, trunc_normal_
 from timm.models.registry import register_model
 from timm.models.vision_transformer import _cfg
-from .softmax_free_transformer import SoftmaxFreeTransformerBlock
+from .softmax_free_transformer import SoftmaxFreeTransformerBlock, SoftmaxFreeNormTransformerBlock
 
 
 class Mlp(nn.Module):
@@ -299,15 +299,64 @@ class SoftmaxFreeVisionTransformer(nn.Module):
         return x
 
 
-def _conv_filter(state_dict, patch_size=16):
-    """ convert patch embedding weight from manual patchify + linear proj to conv"""
-    out_dict = {}
-    for k, v in state_dict.items():
-        if 'patch_embed.proj.weight' in k:
-            v = v.reshape((v.shape[0], 3, patch_size, patch_size))
-        out_dict[k] = v
 
-    return out_dict
+class SoftmaxFreeNormVisionTransformer(SoftmaxFreeVisionTransformer):
+    def __init__(self, 
+                 img_size=224, 
+                 patch_size=16, 
+                 in_chans=3, 
+                 num_classes=1000, 
+                 embed_dims=[64, 128, 256, 512],
+                 num_heads=[1, 2, 4, 8], 
+                 mlp_ratios=[4, 4, 4, 4], 
+                 qkv_bias=False, 
+                 qk_scale=None, 
+                 drop_rate=0.,
+                 attn_drop_rate=0., 
+                 drop_path_rate=0., 
+                 norm_layer=nn.LayerNorm,
+                 depths=[3, 4, 6, 3], 
+                 sr_ratios=[8, 4, 2, 1], 
+                 newton_max_iter=20, 
+                 kernel_method="cuda"):
+        super(SoftmaxFreeNormVisionTransformer, self).__init__(img_size, 
+                                                                  patch_size, 
+                                                                  in_chans, 
+                                                                  num_classes, 
+                                                                  embed_dims,
+                                                                  num_heads, 
+                                                                  mlp_ratios, 
+                                                                  qkv_bias, 
+                                                                  qk_scale, 
+                                                                  drop_rate,
+                                                                  attn_drop_rate, 
+                                                                  drop_path_rate, 
+                                                                  norm_layer,
+                                                                  depths, 
+                                                                  sr_ratios, 
+                                                                  newton_max_iter, 
+                                                                  kernel_method)
+        
+        # transformer encoder
+        dpr = [x.item() for x in torch.linspace(0, drop_path_rate, sum(depths))]  # stochastic depth decay rule
+        cur = 0
+        self.block1 = nn.ModuleList([SoftmaxFreeNormTransformerBlock(
+            dim=embed_dims[0], num_heads=num_heads[0], drop_path=dpr[cur + i], ratio=sr_ratios[0], conv_size=9,
+            max_iter=newton_max_iter, kernel_method=kernel_method)
+            for i in range(depths[0])])
+
+        cur += depths[0]
+        self.block2 = nn.ModuleList([SoftmaxFreeNormTransformerBlock(
+            dim=embed_dims[1], num_heads=num_heads[1], drop_path=dpr[cur + i], ratio=sr_ratios[1], conv_size=5,
+            max_iter=newton_max_iter, kernel_method=kernel_method)
+            for i in range(depths[1])])
+
+        cur += depths[1]
+        self.block3 = nn.ModuleList([SoftmaxFreeNormTransformerBlock(
+            dim=embed_dims[2], num_heads=num_heads[2], drop_path=dpr[cur + i], ratio=sr_ratios[2], conv_size=3,
+            max_iter=newton_max_iter, kernel_method=kernel_method)
+            for i in range(depths[2])])
+
 
 
 @register_model
@@ -353,6 +402,54 @@ def soft_large(pretrained=False, **kwargs):
 @register_model
 def soft_huge(pretrained=False, **kwargs):
     model = SoftmaxFreeVisionTransformer(
+        patch_size=4, embed_dims=[64, 128, 352, 512], num_heads=[2, 4, 11, 16], mlp_ratios=[8, 8, 4, 4], qkv_bias=True,
+        norm_layer=partial(nn.LayerNorm, eps=1e-6), depths=[1, 5, 49, 5], sr_ratios=[8, 4, 2, 1],
+        **kwargs)
+    model.default_cfg = _cfg()
+    return model
+
+@register_model
+def soft_norm_tiny(pretrained=False, **kwargs):
+    model = SoftmaxFreeNormVisionTransformer(
+        patch_size=4, embed_dims=[64, 128, 320, 512], num_heads=[2, 4, 10, 16], mlp_ratios=[8, 8, 4, 4], qkv_bias=True,
+        norm_layer=partial(nn.LayerNorm, eps=1e-6), depths=[1, 2, 3, 2], sr_ratios=[8, 4, 2, 1], 
+        **kwargs)
+    model.default_cfg = _cfg()
+    return model
+
+@register_model
+def soft_norm_small(pretrained=False, **kwargs):
+    model = SoftmaxFreeNormVisionTransformer(
+        patch_size=4, embed_dims=[64, 128, 320, 512], num_heads=[2, 4, 10, 16], mlp_ratios=[8, 8, 4, 4], qkv_bias=True,
+        norm_layer=partial(nn.LayerNorm, eps=1e-6), depths=[1, 3, 20, 4], sr_ratios=[8, 4, 2, 1], 
+        **kwargs)
+    model.default_cfg = _cfg()
+    return model
+
+
+@register_model
+def soft_norm_medium(pretrained=False, **kwargs):
+    model = SoftmaxFreeNormVisionTransformer(
+        patch_size=4, embed_dims=[64, 128, 288, 512], num_heads=[2, 4, 9, 16], mlp_ratios=[8, 8, 4, 4], qkv_bias=True,
+        norm_layer=partial(nn.LayerNorm, eps=1e-6), depths=[1, 3, 29, 5], sr_ratios=[8, 4, 2, 1], 
+        **kwargs)
+    model.default_cfg = _cfg()
+    return model
+
+
+@register_model
+def soft_norm_large(pretrained=False, **kwargs):
+    model = SoftmaxFreeNormVisionTransformer(
+        patch_size=4, embed_dims=[64, 128, 320, 512], num_heads=[2, 4, 10, 16], mlp_ratios=[8, 8, 4, 4], qkv_bias=True,
+        norm_layer=partial(nn.LayerNorm, eps=1e-6), depths=[1, 3, 40, 5], sr_ratios=[8, 4, 2, 1], 
+        **kwargs)
+    model.default_cfg = _cfg()
+    return model
+
+
+@register_model
+def soft_norm_huge(pretrained=False, **kwargs):
+    model = SoftmaxFreeNormVisionTransformer(
         patch_size=4, embed_dims=[64, 128, 352, 512], num_heads=[2, 4, 11, 16], mlp_ratios=[8, 8, 4, 4], qkv_bias=True,
         norm_layer=partial(nn.LayerNorm, eps=1e-6), depths=[1, 5, 49, 5], sr_ratios=[8, 4, 2, 1],
         **kwargs)
