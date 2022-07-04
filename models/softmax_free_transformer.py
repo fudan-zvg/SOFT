@@ -3,6 +3,7 @@ import torch.nn as nn
 import math
 import numpy as np
 from SOFT.kernel.subtraction import subtraction_gaussian_kernel
+from SOFT.kernel.inverse import newton_inverse_kernel
 
 class Approx_GeLU(nn.Module):
     def __init__(self):
@@ -95,7 +96,7 @@ class SoftmaxFreeAttentionKernel(nn.Module):
 
             kernel_3_ = kernel_1_.transpose(-1, -2)
 
-            X = torch.matmul(torch.matmul(kernel_1_, self.newton_inv(kernel_2_)), torch.matmul(kernel_3_, V))
+            X = torch.matmul(torch.matmul(kernel_1_, newton_inverse_kernel(kernel_2_, self.max_iter)), torch.matmul(kernel_3_, V))
 
             if self.use_conv:
                 V = V.reshape(b, nhead, H, W, headdim)
@@ -103,24 +104,6 @@ class SoftmaxFreeAttentionKernel(nn.Module):
                 X += self.conv(V).reshape(b, headdim, nhead, H, W).flatten(3).permute(0, 2, 3, 1)
 
         return X
-
-    def newton_inv(self, mat):
-        P = mat
-        I = torch.eye(mat.size(-1), device=mat.device)
-        alpha = 2 / (torch.max(torch.sum(mat, dim=-1)) ** 2)
-        beta = 0.5
-        V = alpha * P
-        pnorm = torch.max(torch.sum(torch.abs(I - torch.matmul(P, V)), dim=-2))
-        err_cnt = 0
-        while pnorm > 1.01 and err_cnt < 10:
-            alpha *= beta
-            V = alpha * P
-            pnorm = torch.max(torch.sum(torch.abs(I - torch.matmul(P, V)), dim=-2))
-            err_cnt += 1
-
-        for i in range(self.max_iter):
-            V = 2 * V - V @ P @ V
-        return V
 
 
 class SoftmaxFreeAttention(nn.Module):

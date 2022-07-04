@@ -5,11 +5,12 @@ import cv2
 import os
 from functools import partial
 import numpy as np
+from einops import rearrange
 
 from timm.models.layers import DropPath, to_2tuple, trunc_normal_
 from timm.models.registry import register_model
 from timm.models.vision_transformer import _cfg
-from .softmax_free_transformer import SoftmaxFreeTransformer, SoftmaxFreeTrasnformerBlock
+from .softmax_free_transformer import SoftmaxFreeTransformerBlock
 
 
 class Mlp(nn.Module):
