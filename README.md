@@ -1,10 +1,13 @@
-# SOFT: Softmax-free Transformer with Linear Complexity
+# Softmax-free Linear Transformers
 
 ![image](resources/structure.png)
 
-> [**SOFT: Softmax-free Transformer with Linear Complexity**](https://arxiv.org/abs/2110.11945),            
-> Jiachen Lu, Jinghan Yao, Junge Zhang, Xiatian Zhu, Hang Xu, Weiguo Gao, Chunjing Xu, Tao Xiang, Li Zhang,        
-> *NeurIPS 2021 Spotlight* 
+> [**Softmax-free Linear Transformers**](https://arxiv.org/abs/2110.11945),            
+> Jiachen Lu, Li Zhang, Junge Zhang, Xiatian Zhu, Hang Xu, Jianfeng Feng        
+
+## What's new
+1. We propose a normalized softmax-free self-attention with stronger generalizability.
+2. SOFT is now avaliable on more vision tasks (object detection and semantic segmentation).
 
 
 ## Requirments
@@ -42,17 +45,33 @@ python -m pip install -e SOFT
 ```
 
 ## Main results
-### Image Classification
-#### ImageNet-1K
+### ImageNet-1K Image Classification
 
 | Model       | Resolution | Params | FLOPs | Top-1 % | Config |Pretrained Model|
 |-------------|:----------:|:------:|:-----:|:-------:|--------|--------
-| SOFT-Tiny   | 224        | 13M    | 1.9G  | 79.3    |[SOFT_Tiny.yaml](config/SOFT_Tiny.yaml), [SOFT_Tiny_cuda.yaml](config/SOFT_Tiny_cuda.yaml)|[SOFT_Tiny](https://drive.google.com/file/d/1S04DCotIOkP0DaBb8WStQ513z82qT9de/view?usp=sharing), [SOFT_Tiny_cuda](https://drive.google.com/file/d/1inDKh3Wz_2KQgGH_2ywU5H_gLKZpIz_u/view?usp=sharing)
-| SOFT-Small  | 224        | 24M    | 3.3G  | 82.2    |[SOFT_Small.yaml](config/SOFT_Small.yaml), [SOFT_Small_cuda.yaml](config/SOFT_Small_cuda.yaml)|
-| SOFT-Medium | 224        | 45M    | 7.2G  | 82.9    |[SOFT_Meidum.yaml](config/SOFT_Medium.yaml), [SOFT_Meidum_cuda.yaml](config/SOFT_Medium_cuda.yaml)|
-| SOFT-Large  | 224        | 64M    | 11.0G | 83.1    |[SOFT_Large.yaml](config/SOFT_Large.yaml), [SOFT_Large_cuda.yaml](config/SOFT_Large_cuda.yaml)|
-| SOFT-Huge   | 224        | 87M    | 16.3G | 83.3    |[SOFT_Huge.yaml](config/SOFT_Huge.yaml), [SOFT_Huge_cuda.yaml](config/SOFT_Huge_cuda.yaml)|
+| SOFT-Tiny-Norm   | 224        | 13M    | 1.9G  | 79.4    |[SOFT_Tiny_norm.yaml](config/SOFT_Tiny_norm.yaml)|[SOFT_Tiny_norm](https://drive.google.com/file/d/1Isy5b9v_4pyIXDqhKPNRq3WKH0etDlfl/view?usp=sharing)
+| SOFT-Small-Norm  | 224        | 24M    | 3.3G  | 82.4    |[SOFT_Small_norm.yaml](config/SOFT_Small_norm.yaml)|
+| SOFT-Medium-Norm | 224        | 45M    | 7.2G  | 83.1    |[SOFT_Meidum_norm.yaml](config/SOFT_Medium_norm.yaml)|
+| SOFT-Large-Norm  | 224        | 64M    | 11.0G | 83.3    |[SOFT_Large_norm.yaml](config/SOFT_Large_norm.yaml)|
+| SOFT-Huge-Norm   | 224        | 87M    | 16.3G | 83.4    |[SOFT_Huge_norm.yaml](config/SOFT_Huge_norm.yaml)|
 
+### COCO Object Detection (2017 val)
+| Backbone     | Method | lr schd | box mAP | mask mAP | Params |
+|-------------|:----------:|:------:|:-----:|:-------:|:--------:|
+|SOFT-Tiny-Norm | RetinaNet | 1x | 40.0 | - | 23M|
+|SOFT-Tiny-Norm | Mask R-CNN | 1x | 41.2 | 38.2 | 33M|
+|SOFT-Small-Norm | RetinaNet | 1x | 42.8 | - | 34M|
+|SOFT-Small-Norm | Mask R-CNN | 1x | 43.8 | 40.1 | 44M|
+|SOFT-Medium-Norm | RetinaNet | 1x | 44.3 | - | 55M|
+|SOFT-Medium-Norm | Mask R-CNN | 1x | 46.6 | 42.0 | 65M|
+|SOFT-Large-Norm | RetinaNet | 1x | 45.3 | - | 74M|
+|SOFT-Large-Norm | Mask R-CNN | 1x | 47.0 | 42.2 | 84M|
+
+### ADE20K Semantic Segmentation (val)
+| Backbone     | Method | Crop size| lr schd | mIoU | Params |
+|-------------|:----------:|:----------:|:------:|:-----:|:-------:|
+|SOFT-Small-Norm | UperNet |512x512| 1x | 46.2 | 54M|
+|SOFT-Medium-Norm | UperNet |512x512 | 1x | 48.0 | 76M|
 ## Get Started
 
 ### Train
