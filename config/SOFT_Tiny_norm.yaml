@@ -1,0 +1,9 @@
+model: "soft_norm_tiny"
+newton_maxiter: 20
+lr: 1e-3
+min_lr: 5e-5
+warmup_epochs: 10
+batch_size: 128
+epochs: 300
+clip_grad: 1.0
+kernel_method: "torch"
