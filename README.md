@@ -7,7 +7,7 @@
 > *NeurIPS 2021 Spotlight* 
 
 ## NEWS
-- [2022/07/07] Our journal extension [Softmax-free Linear Transformer](arxiv.org/abs/2207.03341) appears on arXiv.
+- [2022/07/07] Our journal extension [Softmax-free Linear Transformer](https://arxiv.org/abs/2207.03341) appears on arXiv.
 - [2022/07/05] SOFT is now available for downstream tasks! An efficient normalization is applied to SOFT. Please refer to [SOFT-Norm](https://github.com/fudan-zvg/SOFT/tree/normalization)
 
 ## Requirments
