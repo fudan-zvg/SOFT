@@ -2,7 +2,7 @@
 
 ![image](resources/structure.png)
 
-> [**Softmax-free Linear Transformers**](https://arxiv.org/abs/2110.11945),            
+> [**Softmax-free Linear Transformers**](https://arxiv.org/abs/2207.03341),            
 > Jiachen Lu, Li Zhang, Junge Zhang, Xiatian Zhu, Hang Xu, Jianfeng Feng        
 
 ## What's new
