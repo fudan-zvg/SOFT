@@ -49,10 +49,10 @@ python -m pip install -e SOFT
 
 | Model       | Resolution | Params | FLOPs | Top-1 % | Config |Pretrained Model|
 |-------------|:----------:|:------:|:-----:|:-------:|--------|--------
-| SOFT-Tiny-Norm   | 224        | 13M    | 1.9G  | 79.4    |[SOFT_Tiny_norm.yaml](config/SOFT_Tiny_norm.yaml)|[SOFT_Tiny_norm](https://drive.google.com/file/d/1Isy5b9v_4pyIXDqhKPNRq3WKH0etDlfl/view?usp=sharing)
-| SOFT-Small-Norm  | 224        | 24M    | 3.3G  | 82.4    |[SOFT_Small_norm.yaml](config/SOFT_Small_norm.yaml)|
-| SOFT-Medium-Norm | 224        | 45M    | 7.2G  | 83.1    |[SOFT_Meidum_norm.yaml](config/SOFT_Medium_norm.yaml)|
-| SOFT-Large-Norm  | 224        | 64M    | 11.0G | 83.3    |[SOFT_Large_norm.yaml](config/SOFT_Large_norm.yaml)|
+| SOFT-Tiny-Norm   | 224        | 13M    | 1.9G  | 79.4    |[SOFT_Tiny_norm.yaml](config/SOFT_Tiny_norm.yaml)|[SOFT_Tiny_norm](https://drive.google.com/file/d/1Isy5b9v_4pyIXDqhKPNRq3WKH0etDlfl/view?usp=sharing)|
+| SOFT-Small-Norm  | 224        | 24M    | 3.3G  | 82.4    |[SOFT_Small_norm.yaml](config/SOFT_Small_norm.yaml)|[SOFT_Small_norm](https://drive.google.com/file/d/1OBjn7FzVdNP1Urqxq7X0yDykyPhxAAW1/view?usp=sharing)|
+| SOFT-Medium-Norm | 224        | 45M    | 7.2G  | 83.1    |[SOFT_Meidum_norm.yaml](config/SOFT_Medium_norm.yaml)|[SOFT_Medium_norm](https://drive.google.com/file/d/1K2C6daaJn3jwurWh38uvV7rexirWjuzh/view?usp=sharing)|
+| SOFT-Large-Norm  | 224        | 64M    | 11.0G | 83.3    |[SOFT_Large_norm.yaml](config/SOFT_Large_norm.yaml)|[SOFT_Large_norm](https://drive.google.com/file/d/1aRYuF_gbBGyiXUDKEcpHJmM04SdvTUdP/view?usp=sharing)|
 | SOFT-Huge-Norm   | 224        | 87M    | 16.3G | 83.4    |[SOFT_Huge_norm.yaml](config/SOFT_Huge_norm.yaml)|
 
 ### COCO Object Detection (2017 val)
