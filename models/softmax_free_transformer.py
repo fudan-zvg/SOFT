@@ -177,3 +177,98 @@ class SoftmaxFreeTransformerBlock(nn.Module):
     def forward(self, x, H, W):
         x = self.att(x, H, W)
         return x
+
+
+class SoftmaxFreeNormAttentionKernel(SoftmaxFreeAttentionKernel):
+    def __init__(self, dim, num_heads, ratio, use_conv, max_iter=20, kernel_method="cuda"):
+        super(SoftmaxFreeSymNormAttentionKernel, self).__init__(dim, num_heads, ratio, use_conv, max_iter, kernel_method)
+
+    def forward(self, Q, V, H, W):
+        b, nhead, num_sequence, headdim = Q.size()
+        # Q: [b, num_head, N, head_dim]
+        Q = Q / math.sqrt(math.sqrt(headdim))
+        K=Q
+        if self.ratio == 1:
+            Q_landmarks = Q.reshape(b * nhead, H * W + 1, headdim)
+            Q_landmarks = self.Qlandmark_op(Q_landmarks)
+            Q_landmarks = self.Qnorm_act(Q_landmarks).reshape(b, nhead, self.num_landmarks + 1, headdim)
+            K_landmarks = Q_landmarks
+            attn = self.kernel_function(Q_landmarks, K_landmarks.transpose(-1, -2).contiguous())
+            attn = torch.exp(-attn / 2)
+            X = torch.matmul(attn, V)
+
+            if self.use_conv:
+                V_ = V[:, :, 1:, :]
+                cls_token = V[:, :, 0, :].unsqueeze(2)
+                V_ = V_.reshape(b, nhead, H, W, headdim)
+                V_ = V_.permute(0, 4, 1, 2, 3).reshape(b * headdim, nhead, H, W)
+                out = self.conv(V_).reshape(b, headdim, nhead, H, W).flatten(3).permute(0, 2, 3, 1)
+                out = torch.cat([cls_token, out], dim=2)
+                X += out
+        else:
+            Q_landmarks = Q.reshape(b * nhead, H * W, 
+                                    headdim).reshape(b * nhead, 
+                                                           H, W, headdim).permute(0, 3, 1, 2)
+            Q_landmarks = self.Qlandmark_op(Q_landmarks)
+            Q_landmarks = Q_landmarks.flatten(2).transpose(1, 2).reshape(b, nhead, -1, headdim)
+            Q_landmarks = self.Qnorm_act(Q_landmarks)
+            K_landmarks = Q_landmarks
+
+            kernel_1_ = self.kernel_function(Q, K_landmarks.transpose(-1, -2).contiguous())
+            kernel_1_ = torch.exp(-kernel_1_/2)
+
+            kernel_2_ = self.kernel_function(Q_landmarks, K_landmarks.transpose(-1, -2).contiguous())
+            kernel_2_ = torch.exp(-kernel_2_/2)
+            
+            D_sym = kernel_2_.sum(-1, keepdim=True)
+            D_sym = 1 / D_sym.sqrt()
+
+            kernel_2_inv = self.newton_inv(kernel_2_)
+            kernel_2_inv = D_sym * kernel_2_inv * D_sym.transpose(-1,-2)
+
+            kernel_3_ = kernel_1_.transpose(-1, -2)
+
+            X = torch.matmul(torch.matmul(kernel_1_, kernel_2_inv), torch.matmul(kernel_3_, V))
+
+            if self.use_conv:
+                V = V.reshape(b, nhead, H, W, headdim)
+                V = V.permute(0, 4, 1, 2, 3).reshape(b*headdim, nhead, H, W)
+                X += self.conv(V).reshape(b, headdim, nhead, H, W).flatten(3).permute(0, 2, 3, 1)
+
+        return X
+
+    def newton_inv(self, mat):
+        P = mat
+        I = torch.eye(mat.size(-1), device=mat.device)
+        alpha = 2 / (torch.max(torch.sum(mat, dim=-1)) ** 2)
+        beta = 0.5
+        V = alpha * P
+        pnorm = torch.max(torch.sum(torch.abs(I - torch.matmul(P, V)), dim=-2))
+        err_cnt = 0
+        while pnorm > 1.01 and err_cnt < 10:
+            alpha *= beta
+            V = alpha * P
+            pnorm = torch.max(torch.sum(torch.abs(I - torch.matmul(P, V)), dim=-2))
+            err_cnt += 1
+
+        for i in range(self.max_iter):
+            V = 2 * V - V @ P @ V
+        return V
+
+
+class SoftmaxFreeNormAttention(SoftmaxFreeAttention):
+    def __init__(self, dim, num_heads, ratio, conv_size, max_iter=20, kernel_method="cuda"):
+        super(SoftmaxFreeNormAttention, self).__init__(dim, num_heads, ratio, conv_size, max_iter, kernel_method)
+        self.attn = SoftmaxFreeNormAttentionKernel(dim, num_heads, ratio, conv_size, max_iter, kernel_method)
+
+
+class SoftmaxFreeNormTransformer(SoftmaxFreeTransformer):
+    def __init__(self, dim, num_heads, ratio, conv_size, drop_path=0., max_iter=20, kernel_method="torch"):
+        super(SoftmaxFreeNormTransformer, self).__init__(dim, num_heads, ratio, conv_size, drop_path, max_iter, kernel_method)
+        self.mha = SoftmaxFreeNormAttention(dim, num_heads, ratio, conv_size, max_iter, kernel_method)
+
+
+class SoftmaxFreeNormTransformerBlock(SoftmaxFreeTransformerBlock):
+    def __init__(self, dim, num_heads, ratio, drop_path=0., conv_size=3, max_iter=20, kernel_method="cuda"):
+        super(SoftmaxFreeNormTransformerBlock, self).__init__(dim, num_heads, ratio, drop_path, conv_size, max_iter, kernel_method)
+        self.att = SoftmaxFreeNormTransformer(dim, num_heads, ratio, conv_size, drop_path, max_iter, kernel_method)
