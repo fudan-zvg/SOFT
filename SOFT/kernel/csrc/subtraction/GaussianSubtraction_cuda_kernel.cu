@@ -9,7 +9,6 @@
 
 using namespace at;
 
-// TODO make it in a common file
 #define CUDA_KERNEL_LOOP_X(i, n)                        \
   for (int i = blockIdx.x * blockDim.x + threadIdx.x;   \
       i < (n);                                          \
@@ -49,23 +48,18 @@ __global__ void subtraction_gaussian_forward_kernel(
         int input_channels
         ) {
     CUDA_KERNEL_LOOP_X(index, xthreads) {
-    //  printf("tid: %d \\n", index);
         const int b = index / num_head / q_len / k_len;
         const int h = (index / q_len / k_len) % num_head;
         const int p = (index / k_len) % q_len;
         const int q = index % k_len;
-    //  printf("b: %d, h: %d, p: %d, q: %d \\n", b, h, p, q);
         if (index < batch_size * num_head * q_len * k_len){
             scalar_t sum = 0;
             for (int c = 0; c < input_channels; c++){
                 int query_offset = b * (num_head * q_len * input_channels) + h * (q_len * input_channels) + p * input_channels + c;
                 int key_offset = b * (num_head * k_len * input_channels) + h * (k_len * input_channels) + c * k_len + q;
                 scalar_t dis = query[query_offset] - key[key_offset];
-    //          printf("query off: %d, key off: %d, query data: %f, key data: %f, dis: %f \\n", query_offset, key_offset, query[query_offset], query[key_offset], dis);
                 sum += dis * dis;
-    //      printf("dis %f \\n", dis * dis);
             }
-    //    printf("sum: %f \\n", sum);
             output[index] = sum;
         }
     }
@@ -85,12 +79,10 @@ __global__ void subtraction_gaussian_backward_query_kernel(
         int k_len,
         int input_channels) {
     CUDA_KERNEL_LOOP_X(index, xthreads) {
-//        printf("tid: %d \n", index);
         const int b = index / num_head / q_len / input_channels;
         const int h = (index / q_len / input_channels) % num_head;
         const int q = (index / input_channels) % q_len;
         const int c = index % input_channels;
-//        printf("b: %d, h: %d, q: %d, c: %d \n", b, h, q, c);
         if (index < batch_size * num_head * q_len * input_channels){
             scalar_t sum = 0;
             int query_offset = b * (num_head * q_len * input_channels) + h * (q_len * input_channels) + q * input_channels + c;
@@ -99,11 +91,7 @@ __global__ void subtraction_gaussian_backward_query_kernel(
                 int output_offset = b * (num_head * k_len * q_len) + h * (k_len * q_len) + q * k_len + k;
                 int key_offset = b * (num_head * k_len * input_channels) + h * (k_len * input_channels) + c * k_len + k;
                 sum += 2 * output_diff[output_offset] * (query - key_data[key_offset]);
-//                scalar_t output_ind= output_diff[output_offset];
-//                scalar_t key_ind= key_data[key_offset];
-//            printf("query off: %d, key off: %d, output off: %d, query data: %f, key data: %f, output data: %f\n", query_offset, key_offset, output_offset, query, key_ind, output_ind);
             }
-//        printf("sum: %f \n", sum);
             query_diff[index] = sum;
         }
     }
@@ -123,12 +111,10 @@ __global__ void subtraction_gaussian_backward_key_kernel(
         int k_len,
         int input_channels) {
     CUDA_KERNEL_LOOP_X(index, xthreads) {
-//        printf("tid: %d \n", index);
         const int b = index / num_head / input_channels / k_len;
         const int h = (index / input_channels / k_len) % num_head;
         const int c = (index / k_len) % input_channels;
         const int k = index % k_len;
-//        printf("b: %d, h: %d, c: %d, k: %d \n", b, h, c, k);
         if (index < batch_size * num_head * k_len * input_channels){
             scalar_t sum = 0;
             int key_offset = b * (num_head * k_len * input_channels) + h * (k_len * input_channels) + c * k_len + k;
@@ -137,11 +123,7 @@ __global__ void subtraction_gaussian_backward_key_kernel(
                 int output_offset = b * (num_head * k_len * q_len) + h * (k_len * q_len) + q * k_len + k;
                 int query_offset = b * (num_head * q_len * input_channels) + h * (q_len * input_channels) + q * input_channels + c;
                 sum += 2 * output_diff[output_offset] * (query_data[query_offset] - key);
-//                scalar_t output_ind= output_diff[output_offset];
-//                scalar_t query_ind= query_data[query_offset];
-//                printf("query off: %d, key off: %d, output off: %d, query data: %f, key data: %f, output data: %f\n", query_offset, key_offset, output_offset, query_ind, key, output_ind);
             }
-//            printf("sum: %f \n", sum);
         key_diff[index] = -sum;
         }
     }
@@ -161,48 +143,35 @@ __global__ void subtraction_reduce_gaussian_forward_kernel(
         int input_channels
 ) {
     CUDA_KERNEL_LOOP_X(index, xthreads) {
-        //  printf("tid: %d \\n", index);
         __shared__ scalar_t cdata[32][32];
         const int b = index / num_head / q_len / k_len;
         const int h = (index / q_len / k_len) % num_head;
         const int p = (index / k_len) % q_len;
         const int q = index % k_len;
-        //  printf("b: %d, h: %d, p: %d, q: %d \\n", b, h, p, q);
         scalar_t sum = 0;
         if (index < batch_size * num_head * q_len * k_len){
             for (int c = 0; c < input_channels; c++){
                 int query_offset = b * (num_head * q_len * input_channels) + h * (q_len * input_channels) + p * input_channels + c;
                 int key_offset = b * (num_head * k_len * input_channels) + h * (k_len * input_channels) + c * k_len + q;
                 scalar_t dis = query[query_offset] - key[key_offset];
-                //          printf("query off: %d, key off: %d, query data: %f, key data: %f, dis: %f \\n", query_offset, key_offset, query[query_offset], query[key_offset], dis);
                 cdata[index][c] = dis * dis;
                 sum += dis * dis;
-                //      printf("dis %f \\n", dis * dis);
             }
             __syncthreads();
-//            printf("cdata0: %f  ", cdata[0]);
             int ytid = threadIdx.y;
-//            printf("ytid %d \n", ytid);
             if (ytid < 16){
-//                scalar_t *vcdata = cdata;
-//                printf("32cdata0: %f, 32cdata16: %f\n", cdata[0], cdata[16]);
                 __syncthreads();
                 cdata[index][ytid] += cdata[index][ytid + 16];
                 __syncthreads();
-//                printf("16cdata0: %f\n", cdata[0]);
                 __syncthreads();
                 cdata[index][ytid] += cdata[index][ytid + 8];
                 __syncthreads();
-//                printf("8cdata0: %f\n", cdata[0]);
                 cdata[index][ytid] += cdata[index][ytid + 4];
                 __syncthreads();
-//                printf("4cdata0: %f\n", cdata[0]);
                 cdata[index][ytid] += cdata[index][ytid + 2];
                 __syncthreads();
-//                printf("2cdata0: %f\n", cdata[0]);
                 cdata[index][ytid] += cdata[index][ytid + 1];
                 __syncthreads();
-//                printf("1cdata0: %f\n", cdata[0]);
             }
             if (ytid == 0) {output[index]= cdata[index][0];}
 
@@ -262,7 +231,6 @@ namespace SOFT {
             int k_len,
             int input_channels) {
         const int nx = batch_size * num_head * q_len * input_channels;
-//        printf("query nx: %d \n", nx);
         at::cuda::CUDAGuard device_guard(query_data.device());
         cudaStream_t stream = at::cuda::getCurrentCUDAStream();
 
@@ -305,9 +273,6 @@ namespace SOFT {
             int k_len,
             int input_channels) {
         const int nx = batch_size * num_head * k_len * input_channels;
-//        printf("key nx: %d \n", nx);
-//        printf("key len: %d \n", k_len);
-//        printf("key channel: %d \n", input_channels);
         at::cuda::CUDAGuard device_guard(query_data.device());
         cudaStream_t stream = at::cuda::getCurrentCUDAStream();
 

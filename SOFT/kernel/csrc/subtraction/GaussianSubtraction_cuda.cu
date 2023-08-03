@@ -132,10 +132,7 @@ namespace SOFT {
         int num_head = query.size(1);
         int q_len = query.size(2);
         int k_len = key.size(3);
-//        printf("qlen: %d\n", q_len);
-//        printf("klen: %d\n", k_len);
         int input_channels = query.size(3);
-//        printf("query: %d, %d, %d, %d\n", query.size(0), query.size(1), query.size(2), query.size(3));
         subtraction_gaussian_backward_key_cuda(
                 gradOutput,
                 query,
