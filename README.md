@@ -115,6 +115,15 @@ Please **install** SOFT before running the `cuda` version.
 }
 ```
 
+```bibtex
+@article{Softmax,
+    title={Softmax-free Linear Transformers}, 
+    author={Lu, Jiachen and Zhang, Li and Zhang, Junge and Zhu, Xiatian and Feng, Jianfeng and Xiang, Tao},
+    journal={International Journal of Coumputer Vision},
+    year={2024}
+}
+```
+
 ## License
 
 [MIT](LICENSE)
