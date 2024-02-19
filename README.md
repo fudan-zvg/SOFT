@@ -2,15 +2,18 @@
 
 ![image](resources/structure.png)
 
-> [**Softmax-free Linear Transformers**](https://arxiv.org/abs/2207.03341),            
-> Jiachen Lu, Li Zhang, Junge Zhang, Xiatian Zhu, Hang Xu, Jianfeng Feng        
+> (NeurIPS2021) [**SOFT: Softmax-free Transformer with Linear Complexity**](https://arxiv.org/abs/2110.11945),            
+> Jiachen Lu, Jinghan Yao, Junge Zhang, Xiatian Zhu, Hang Xu, Weiguo Gao, Chunjing Xu, Tao Xiang, Li Zhang
+
+> (IJCV) [**Softmax-free Linear Transformers**](https://arxiv.org/abs/2207.03341),            
+> Jiachen Lu, Li Zhang, Junge Zhang, Xiatian Zhu, Jianfeng Feng, Tao Xiang
 
 ## What's new
 1. We propose a normalized softmax-free self-attention with stronger generalizability.
 2. SOFT is now avaliable on more vision tasks (object detection and semantic segmentation).
 
 ## NEWS
-- [2022/07/07] Our journal extension [Softmax-free Linear Transformer](https://arxiv.org/abs/2207.03341) appears on arXiv.
+- [2024/02/12] Our journal extension [Softmax-free Linear Transformer](https://arxiv.org/abs/2207.03341) is accepted by IJCV.
 - [2022/07/05] SOFT is now available for downstream tasks! An efficient normalization is applied to SOFT. Please refer to [SOFT-Norm](https://github.com/fudan-zvg/SOFT/tree/normalization)
 
 ## Requirments
