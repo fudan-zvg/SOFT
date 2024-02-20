@@ -2,10 +2,10 @@
 
 ![image](resources/structure.png)
 
-> (NeurIPS2021) [**SOFT: Softmax-free Transformer with Linear Complexity**](https://arxiv.org/abs/2110.11945),            
+> (NeurIPS 2021) [**SOFT: Softmax-free Transformer with Linear Complexity**](https://arxiv.org/abs/2110.11945),            
 > Jiachen Lu, Jinghan Yao, Junge Zhang, Xiatian Zhu, Hang Xu, Weiguo Gao, Chunjing Xu, Tao Xiang, Li Zhang
 
-> (IJCV) [**Softmax-free Linear Transformers**](https://arxiv.org/abs/2207.03341),            
+> (IJCV 2024) [**Softmax-free Linear Transformers**](https://arxiv.org/abs/2207.03341),            
 > Jiachen Lu, Li Zhang, Junge Zhang, Xiatian Zhu, Jianfeng Feng, Tao Xiang
 
 ## What's new
