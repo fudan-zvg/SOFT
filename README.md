@@ -2,11 +2,14 @@
 
 ![image](resources/structure.png)
 
-> (NeurIPS 2021) [**SOFT: Softmax-free Transformer with Linear Complexity**](https://arxiv.org/abs/2110.11945),            
+> [**SOFT: Softmax-free Transformer with Linear Complexity**](https://arxiv.org/abs/2110.11945),            
 > Jiachen Lu, Jinghan Yao, Junge Zhang, Xiatian Zhu, Hang Xu, Weiguo Gao, Chunjing Xu, Tao Xiang, Li Zhang
+> **NeurIPS 2021**
 
-> (IJCV 2024) [**Softmax-free Linear Transformers**](https://arxiv.org/abs/2207.03341),            
+> [**Softmax-free Linear Transformers**](https://arxiv.org/abs/2207.03341),            
 > Jiachen Lu, Li Zhang, Junge Zhang, Xiatian Zhu, Jianfeng Feng, Tao Xiang
+> **IJCV 2024**
+
 
 ## What's new
 1. We propose a normalized softmax-free self-attention with stronger generalizability.
