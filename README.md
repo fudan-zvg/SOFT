@@ -7,7 +7,7 @@
 > **NeurIPS 2021**
 
 > [**Softmax-free Linear Transformers**](https://arxiv.org/abs/2207.03341),            
-> Jiachen Lu, Li Zhang, Junge Zhang, Xiatian Zhu, Jianfeng Feng, Tao Xiang  
+> Jiachen Lu, Junge Zhang, Xiatian Zhu, Jianfeng Feng, Tao Xiang, Li Zhang  
 > **IJCV 2024**
 
 
